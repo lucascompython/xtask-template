@@ -108,9 +108,13 @@ fn build_fast_dev(_args: FastDevArgs) -> Result<(), Box<dyn Error>> {
         ""
     };
 
+    let num_threads = std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(4);
+
     let dev_rustflags = format!(
-        "{} -Zthreads=32 -Zcodegen-backend=cranelift -Zshare-generics=y",
-        linker_arg
+        "{} -Zthreads={} -Zcodegen-backend=cranelift -Zshare-generics=y",
+        linker_arg, num_threads
     );
 
     println!("Building in dev mode (fast build)...");
