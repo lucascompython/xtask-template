@@ -10,7 +10,7 @@ The template supports three heavily optimized profiles:
 
 ### 1. `fast-dev`
 
-**Command:** `cargo xtask fast-dev`
+**Command:** `cargo xtask fast-dev` and `cargo xtask clippy`
 
 **Purpose**: Maximize compilation speed during repetitive local development cycles.
 
