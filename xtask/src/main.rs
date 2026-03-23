@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand, Args};
+use clap::{Args, Parser, Subcommand};
 use std::env;
 use std::error::Error;
 use std::fmt;
@@ -6,15 +6,15 @@ use std::path::Path;
 use std::process::{Command, Stdio};
 
 // To change the build commands (e.g., to use Tauri), update these constants:
-// 
+//
 // Example for default Cargo project:
 // const RUN_CMD: &[&str] = &["cargo", "run"];
 // const BUILD_CMD: &[&str] = &["cargo", "build", "--release"];
-// 
+//
 // Example for Tauri:
 // const RUN_CMD: &[&str] = &["cargo", "tauri", "dev"];
 // const BUILD_CMD: &[&str] = &["cargo", "tauri", "build"];
-// 
+//
 // Example for custom profiles:
 // const RUN_CMD: &[&str] = &["cargo", "run", "--profile", "fast-dev"];
 // const BUILD_CMD: &[&str] = &["cargo", "build", "--profile", "fast-dev"];
@@ -23,7 +23,7 @@ const RUN_CMD: &[&str] = &["cargo", "run"];
 const BUILD_CMD: &[&str] = &["cargo", "build", "--release"];
 
 /// Update this with your actual binary name to locate the executable correctly for things like UPX and size reporting.
-const BINARY_NAME: &str = "xtask-template"; 
+const BINARY_NAME: &str = "xtask-template";
 
 #[derive(Debug)]
 struct CommandError {
@@ -103,12 +103,15 @@ fn build_fast_dev(_args: FastDevArgs) -> Result<(), Box<dyn Error>> {
     let linker_arg = if cfg!(target_os = "windows") {
         "-Clinker=rust-lld.exe"
     } else if cfg!(target_os = "linux") {
-        "-Clinker=clang -Clink-arg=-fuse-ld=wild"
+        "-Clinker=clang -Clink-arg=--ld-path=wild"
     } else {
         ""
     };
 
-    let dev_rustflags = format!("{} -Zthreads=32 -Zcodegen-backend=cranelift -Zshare-generics=y", linker_arg);
+    let dev_rustflags = format!(
+        "{} -Zthreads=32 -Zcodegen-backend=cranelift -Zshare-generics=y",
+        linker_arg
+    );
 
     println!("Building in dev mode (fast build)...");
 
@@ -116,12 +119,7 @@ fn build_fast_dev(_args: FastDevArgs) -> Result<(), Box<dyn Error>> {
     let mut args = vec!["+nightly"];
     args.extend_from_slice(&RUN_CMD[1..]);
 
-    run_command(
-        cmd,
-        &args,
-        &[("RUSTFLAGS", &dev_rustflags)],
-        &project_root,
-    )?;
+    run_command(cmd, &args, &[("RUSTFLAGS", &dev_rustflags)], &project_root)?;
 
     println!("Fast-dev build finished successfully.");
     Ok(())
@@ -274,7 +272,10 @@ fn build_app(
         if let Ok(metadata) = std::fs::metadata(binary_path) {
             println!("Final binary size: {} bytes", metadata.len());
         } else {
-            println!("Could not read final binary size (path might be incorrect: {:?}).", binary_path);
+            println!(
+                "Could not read final binary size (path might be incorrect: {:?}).",
+                binary_path
+            );
         }
     }
 
