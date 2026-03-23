@@ -24,6 +24,13 @@ The template supports three heavily optimized profiles:
 - **Advanced Windows Tips**: For even faster link times on Windows, consider using `radlinker`. Additionally, moving your project to a **Windows Dev Drive** (which builds on the ReFS file system) will significantly improve your overall disk I/O and parallel compilation times. You can also create an Antivirus exclusion for your project folder, which will significantly reduce the overhead for spawning processes.
 - You may consider removing the cranelift backend flag if some specific crates you rely on do not support it properly yet (looking at you `aws-lc-rs`).
 - Use `sccache` for caching.
+- If you don't care about debug symbols, you can also add `debug = 0` and `strip = "debuginfo"` to your Cargo profile configuration to further speed up compilation.
+- If you heavily use procedural macros in your project (e.g., if you use serde), it might be worth it to play around with opt-levels in your Cargo.toml [[1]](https://github.com/mre/endler.dev/issues/53#issuecomment-1366829563):
+
+```toml
+[profile.dev.build-override]
+opt-level = 3
+```
 
 ### 2. `min-size`
 
