@@ -1,6 +1,7 @@
 # Rust xtask Template
 
-This is a template wrapper that leverages Cargo's `xtask` pattern to manage powerful customized build commands.
+This is a template wrapper that leverages Cargo's `xtask` pattern to manage powerful customized build commands.  
+This template heavelly relies on the `nightly` toolchain.
 
 ## CLI Commands
 
