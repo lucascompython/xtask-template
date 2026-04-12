@@ -63,7 +63,11 @@ enum SubCommands {
 }
 
 #[derive(Args, Debug)]
-struct FastDevArgs {}
+struct FastDevArgs {
+    /// Arguments to pass to the program when running in fast-dev mode
+    #[arg(last = true)]
+    program_args: Vec<String>,
+}
 
 #[derive(Args, Debug)]
 struct ClippyArgs {}
@@ -122,7 +126,7 @@ fn get_fast_dev_rustflags() -> String {
     )
 }
 
-fn build_fast_dev(_args: FastDevArgs) -> Result<(), Box<dyn Error>> {
+fn build_fast_dev(args: FastDevArgs) -> Result<(), Box<dyn Error>> {
     let project_root = env::current_dir()?;
 
     let dev_rustflags = get_fast_dev_rustflags();
@@ -130,10 +134,23 @@ fn build_fast_dev(_args: FastDevArgs) -> Result<(), Box<dyn Error>> {
     println!("Building in dev mode (fast build)...");
 
     let cmd = RUN_CMD[0]; // e.g. "cargo"
-    let mut args = vec!["+nightly"];
-    args.extend_from_slice(&RUN_CMD[1..]);
+    let mut cargo_args = vec!["+nightly"];
+    cargo_args.extend_from_slice(&RUN_CMD[1..]);
+    cargo_args.push("--");
+    cargo_args.extend_from_slice(
+        &args
+            .program_args
+            .iter()
+            .map(|s| s.as_str())
+            .collect::<Vec<&str>>(),
+    );
 
-    run_command(cmd, &args, &[("RUSTFLAGS", &dev_rustflags)], &project_root)?;
+    run_command(
+        cmd,
+        &cargo_args,
+        &[("RUSTFLAGS", &dev_rustflags)],
+        &project_root,
+    )?;
 
     println!("Fast-dev build finished successfully.");
     Ok(())
