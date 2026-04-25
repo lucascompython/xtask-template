@@ -7,6 +7,32 @@ This template heavelly relies on the `nightly` toolchain.
 
 You can run these custom workflows using `cargo xtask <subcommand>` (assuming you've setup a `.cargo/config.toml` alias) or `cargo run --manifest-path xtask/Cargo.toml -- <subcommand>`.
 
+Usage:
+
+```sh
+cargo xtask --help
+Usage: xtask <COMMAND>
+
+Commands:
+  fast-dev  Run dev build with fast linking. Syntax: -- [cargo-args] -- [program-args]
+  min-size  Build release optimized for minimum binary size. Syntax: -- [cargo-args]
+  speed     Build release optimized for execution speed. Syntax: -- [cargo-args]
+  clippy    Run clippy with fast-dev flags
+  help      Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+
+EXTRA ARGS SYNTAX:
+  cargo xtask <PROFILE> [profile-flags] -- [cargo-args] -- [program-args]
+
+EXAMPLES:
+  cargo xtask fast-dev -- --features foo -- --verbose
+  cargo xtask min-size --upx -- --features bar --package my-crate
+  cargo xtask speed --native -- --features foo -- --ignored
+```
+
 The template supports three heavily optimized profiles:
 
 ### 1. `fast-dev`
