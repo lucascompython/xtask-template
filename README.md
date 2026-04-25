@@ -109,3 +109,8 @@ const BUILD_CMD: &[&str] = &["cargo", "tauri", "build"];
 - https://nnethercote.github.io/perf-book
 - https://github.com/johnthagen/min-sized-rust
 - https://corrode.dev/blog/tips-for-faster-rust-compile-times/
+
+## TODO
+
+- [ ] Test wasm targets, especially with `wasm-opt` post-processing for size and speed profiles.
+- [ ] Add `leptos` and `trunk` specific support.
